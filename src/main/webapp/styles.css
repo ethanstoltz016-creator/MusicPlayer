@@ -1,0 +1,258 @@
+:root {
+  --ink: #17251f;
+  --muted: #63736a;
+  --paper: #f4f1e8;
+  --panel: #fffdf7;
+  --line: #d6d9c9;
+  --accent: #d65a3a;
+  --accent-dark: #9d3829;
+  --mint: #dce9d5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image: radial-gradient(circle at top right, #e4ebd9 0, transparent 36%);
+  transition: background 0.3s ease, color 0.3s ease; 
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* ==========================================
+   Dark Mode Component System (Eye-Friendly)
+   ========================================== */
+body.dark-mode {
+  background-image: none;
+  background-color: rgb(39, 39, 39);
+  
+  /* Overriding variables with soft, low-contrast dark tones */
+  --ink: #e2e8f0;          /* Soft off-white text */
+  --muted: #94a3b8;        /* Muted slate text */
+  --paper: #272727;        /* Match the main body color */
+  --panel: #1e1e1e;        /* Darker grey panel background */
+  --line: #475569;         /* Muted border outlines */
+  --mint: #334155;         /* Deeper shadow accent to replace the mint */
+  --accent: #e07a5f;       /* Softened, less harsh orange-red button highlight */
+}
+
+.player-shell { 
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto; 
+  padding: 56px 0 72px; 
+}
+
+header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px; 
+  color: var(--accent-dark);
+  font: 700 12px/1.2 Verdana, sans-serif;
+  letter-spacing: 1.5px;
+}
+
+/* Make eyebrow clear but soft in dark mode */
+body.dark-mode .eyebrow {
+  color: var(--accent);
+}
+
+h1 { 
+  margin: 0; 
+  font-size: clamp(42px, 8vw, 76px); 
+  line-height: .95; 
+  font-weight: 400; 
+}
+
+h2 { 
+  margin: 0; 
+  font-size: 32px; 
+  font-weight: 400; 
+}
+
+.color-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid var(--line); /* Changed to dynamic var */
+}
+
+.now-playing { 
+  margin: 18px 0 0; 
+  color: var(--muted); 
+  font-size: 18px; 
+}
+
+.player-panel, 
+.library-panel { 
+  background: var(--panel); 
+  border: 1px solid var(--line); 
+  box-shadow: 8px 8px 0 var(--mint); 
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.player-panel { 
+  margin: 34px 0 42px; 
+  padding: 24px; 
+}
+
+audio { 
+  width: 100%; 
+}
+
+/* Ensure audio players remain legible on dark panels */
+body.dark-mode audio {
+  filter: invert(0.9) hue-rotate(180deg); 
+  opacity: 0.85;
+}
+
+.controls { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 10px; 
+  margin-top: 20px; 
+}
+
+button, 
+.folder-picker, 
+.file-picker { 
+  border: 1px solid var(--ink); 
+  background: transparent; 
+  color: var(--ink); 
+  padding: 10px 14px; 
+  font: 700 13px Verdana, sans-serif; 
+  cursor: pointer; 
+  transition: all 0.2s ease;
+}
+
+button:hover, 
+.folder-picker:hover, 
+.file-picker:hover { 
+  background: var(--accent); 
+  color: white; 
+  border-color: var(--accent); 
+}
+
+.library-panel { 
+  padding: 26px; 
+}
+
+.section-heading { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-end; 
+  gap: 20px; 
+}
+
+.volume-control { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  color: var(--muted); 
+  font: 12px Verdana, sans-serif; 
+}
+
+.file-tools { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 10px; 
+  margin: 28px 0 10px; 
+}
+
+.folder-picker, 
+.file-picker { 
+  display: inline-block; 
+}
+
+.folder-picker input, 
+.file-picker input { 
+  position: absolute; 
+  width: 1px; 
+  height: 1px; 
+  opacity: 0; 
+}
+
+.help-text { 
+  color: var(--muted); 
+  font: 12px/1.5 Verdana, sans-serif; 
+}
+
+/* ==========================================
+   Playlist Layout Component System
+   ========================================== */
+
+.playlist { 
+  display: grid; 
+  gap: 6px; 
+  padding: 0; 
+  margin: 24px 0 0; 
+  list-style: none; 
+}
+
+.playlist-item-wrapper { 
+  border-bottom: 1px solid var(--line); 
+  padding-bottom: 6px; 
+}
+
+.playlist li button {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 10px 14px;
+  font: 400 15px Georgia, serif;
+  color: var(--ink);
+  transition: background-color 0.15s ease;
+}
+
+.playlist li button:hover {
+  background-color: var(--paper);
+  color: var(--ink);
+  border-color: transparent;
+}
+
+.playlist li button.selected {
+  background: var(--accent);
+  color: white;
+  font-weight: bold;
+}
+
+.playlist li button.selected .track-duration {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.track-title {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 15px;
+}
+
+.track-duration {
+  color: var(--muted);
+  font-family: monospace; 
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+.empty-message { 
+  color: var(--muted); 
+}
+
+@media (max-width: 600px) {
+  .player-shell { padding-top: 32px; }
+  .section-heading { align-items: flex-start; flex-direction: column; }
+  .volume-control { width: 100%; justify-content: space-between; }
+  .volume-control input { width: 65%; }
+  .player-panel, .library-panel { box-shadow: 4px 4px 0 var(--mint); }
+}
