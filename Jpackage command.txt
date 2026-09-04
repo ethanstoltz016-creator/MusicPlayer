@@ -1,0 +1,6 @@
+& "C:\Program Files\Java\jdk-26.0.2.1\bin\jpackage.exe" --type app-image `
+  --input target `
+  --main-jar musicplayer.jar `
+  --main-class MainLauncher `
+  --name "MusicPlayer" `
+  --icon "src/main/resources/myIcon.ico"

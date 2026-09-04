@@ -1,0 +1,196 @@
+/* ==========================================================================
+   JavaFX Desktop Style Theme (Web Translation Master)
+   ========================================================================== */
+
+/* Light Theme Variables applied to Root Container */
+.root {
+    -fx-ink: #17251f;
+    -fx-muted: #63736a;
+    -fx-paper: #f4f1e8;
+    -fx-panel: #fffdf7;
+    -fx-line: #d6d9c9;
+    -fx-accent: #d65a3a;
+    -fx-accent-dark: #9d3829;
+    -fx-mint: #dce9d5;
+
+    -fx-background-color: -fx-paper;
+}
+
+/* Dark Theme Variables System Override */
+.root.dark-mode {
+    -fx-ink: #e2e8f0;
+    -fx-muted: #94a3b8;
+    -fx-paper: #272727;
+    -fx-panel: #1e1e1e;
+    -fx-line: #475569;
+    -fx-mint: #334155;
+    -fx-accent: #e07a5f;
+    -fx-accent-dark: #e07a5f;
+
+    -fx-background-color: -fx-paper;
+}
+
+/* Shell Layout Containers */
+.player-shell {
+    -fx-padding: 30 40 40 40;
+    -fx-spacing: 25;
+}
+
+.header-panel {
+    -fx-border-color: transparent transparent -fx-line transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 20 0;
+    -fx-spacing: 10;
+}
+
+/* Typography Elements */
+.eyebrow {
+    -fx-text-fill: -fx-accent-dark;
+    -fx-font-family: "Verdana", "sans-serif";
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.main-title {
+    -fx-text-fill: -fx-ink;
+    -fx-font-family: "Georgia", "serif";
+    -fx-font-size: 46px;
+}
+
+.section-title {
+    -fx-text-fill: -fx-ink;
+    -fx-font-family: "Georgia", "serif";
+    -fx-font-size: 24px;
+}
+
+.now-playing {
+    -fx-text-fill: -fx-muted;
+    -fx-font-family: "Georgia", "serif";
+    -fx-font-size: 16px;
+}
+
+.help-text {
+    -fx-text-fill: -fx-muted;
+    -fx-font-family: "Verdana", "sans-serif";
+    -fx-font-size: 11px;
+}
+
+/* Content Control Cards (Panels) */
+.player-panel, .library-panel {
+    -fx-background-color: -fx-panel;
+    -fx-border-color: -fx-line;
+    -fx-border-width: 1;
+    -fx-padding: 24;
+}
+
+/* Modernized Button Controls */
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-ink;
+    -fx-border-width: 1;
+    -fx-text-fill: -fx-ink;
+    -fx-font-family: "Verdana", "sans-serif";
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 10 16;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.button:hover {
+    -fx-background-color: -fx-accent;
+    -fx-border-color: -fx-accent;
+    -fx-text-fill: #ffffff;
+}
+
+/* Theme Mode Component Switcher Button */
+.color-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-line;
+    -fx-border-width: 1;
+    -fx-text-fill: -fx-ink;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-padding: 6 12;
+}
+
+/* Playback Progress Slider Controls */
+.slider .track {
+    -fx-background-color: -fx-line;
+    -fx-pref-height: 6;
+}
+.slider .thumb {
+    -fx-background-color: -fx-accent;
+    -fx-background-radius: 10;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
+}
+
+/* Custom Playlist Container Elements */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-line;
+    -fx-padding: 5;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-ink;
+    -fx-padding: 0;
+    -fx-border-color: transparent transparent -fx-line transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: -fx-paper;
+    -fx-text-fill: -fx-ink;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: -fx-accent;
+}
+
+/* Custom child text wrappers inside rows */
+.cell-layout {
+    -fx-padding: 10 14;
+    -fx-alignment: center-left;
+}
+
+.track-title-label {
+    -fx-text-fill: -fx-ink;
+    -fx-font-family: "Georgia", "serif";
+    -fx-font-size: 15px;
+}
+
+.list-cell:filled:selected .track-title-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.track-duration-label {
+    -fx-text-fill: -fx-muted;
+    -fx-font-family: "monospace";
+    -fx-font-size: 14px;
+}
+
+.list-cell:filled:selected .track-duration-label {
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-font-weight: bold;
+}
+
+/* Text Field Inputs */
+.text-input {
+    -fx-background-color: -fx-panel;
+    -fx-border-color: -fx-ink;
+    -fx-border-width: 1;
+    -fx-text-fill: -fx-ink;
+    -fx-font-family: "Verdana", sans-serif;
+    -fx-font-size: 13px;
+    -fx-padding: 10 12;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.text-input:focused {
+    -fx-border-color: -fx-accent;
+}

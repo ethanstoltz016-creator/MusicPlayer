@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -57,26 +56,39 @@ public class MediaLibrary extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Initialize default static files into model wrappers
-        /*
-            List<String> rawTracks = Arrays.asList(
-                "02_A_Place_for_My_Head_SpotiDost.mp3",
-                "06_Breaking_the_Habit_SpotiDost.mp3",
-                "11_Heavy_Is_the_Crown_SpotiDost.mp3",
-                "12_The_Catalyst_SpotiDost.mp3"
-            );
-            for (String trackPath : rawTracks) {
-                playlist.add(new Track(trackPath));
+        
+        // --- 1. Header Area (<header> Layout Grid) ---
+        HBox topRow = new HBox();
+        Label eyebrow = new Label("PERSONAL MUSIC LIBRARY");
+        eyebrow.getStyleClass().add("eyebrow");
+        
+        Button darkModeBtn = new Button("Dark Mode");
+        darkModeBtn.getStyleClass().add("color-btn");
+        
+        VBox titleArea = new VBox(5, eyebrow, new Label("Music Player"));
+        titleArea.getChildren().get(1).getStyleClass().add("main-title");
+        HBox.setHgrow(titleArea, Priority.ALWAYS);
+        topRow.getChildren().addAll(titleArea, darkModeBtn);
+
+        trackLabel = new Label("Choose a song to begin");
+        trackLabel.getStyleClass().add("now-playing");
+
+        VBox headerContainer = new VBox(10, topRow, trackLabel);
+        headerContainer.getStyleClass().add("header-panel");
+
+        // --- 2. Player Controls Panel (<section class="player-panel">) ---
+        progressSlider = new Slider();
+        HBox.setHgrow(progressSlider, Priority.ALWAYS);
+        progressSlider.setOnMouseReleased(e -> {
+            if (mediaPlayer != null) {
+                double total = mediaPlayer.getTotalDuration().toMillis();
+                if (total > 0) {
+                    mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(progressSlider.getValue() / 100.0));
+                }
             }
-        */
+        });
 
-        // 1. Track Display Label
-        trackLabel = new Label();
-        trackLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;");
-
-        // 2. Play / Pause Control
-        playButton = new Button("Pause");
-        playButton.setMinWidth(60);
+        playButton = new Button("Play");
         playButton.setOnAction(e -> {
             if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
                 mediaPlayer.pause();
@@ -96,71 +108,43 @@ public class MediaLibrary extends Application {
             shuffleButton.setText("Shuffle: " + (shuffleMode ? "On" : "Off"));
         });
 
-        // 3. Progress Bar (Slider)
-        progressSlider = new Slider();
-        progressSlider.setMinWidth(350);
-        progressSlider.setOnMouseReleased(e -> {
-            if (mediaPlayer != null) {
-                double total = mediaPlayer.getTotalDuration().toMillis();
-                if (total > 0) {
-                    mediaPlayer.seek(mediaPlayer.getTotalDuration().multiply(progressSlider.getValue() / 100.0));
-                }
-            }
-        });
+        HBox controlsLayout = new HBox(12, playButton, nextButton, shuffleButton, progressSlider);
+        controlsLayout.setAlignment(Pos.CENTER_LEFT);
 
-        // 4. Volume Control
-        Label volumeLabel = new Label("🔊 Volume:");
+        VBox playerPanelCard = new VBox(controlsLayout);
+        playerPanelCard.getStyleClass().add("player-panel");
+
+        // --- 3. Library/Queue Panel (<section class="library-panel">) ---
+        Label queueEyebrow = new Label("YOUR QUEUE");
+        queueEyebrow.getStyleClass().add("eyebrow");
+        Label playlistTitle = new Label("Playlist");
+        playlistTitle.getStyleClass().add("section-title");
+        VBox playlistHeading = new VBox(2, queueEyebrow, playlistTitle);
+
+        Label volumeLabel = new Label("Volume");
+        volumeLabel.getStyleClass().add("help-text");
         Slider volumeSlider = new Slider(0, 100, 50);
-        volumeSlider.setMaxWidth(100);
+        volumeSlider.setPrefWidth(120);
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
                 mediaPlayer.setVolume(newValue.doubleValue() / 100.0);
             }
         });
+        
+        HBox volumeBox = new HBox(8, volumeLabel, volumeSlider);
+        volumeBox.setAlignment(Pos.BOTTOM_RIGHT);
+        HBox.setHgrow(volumeBox, Priority.ALWAYS);
+        volumeBox.getStyleClass().add("volume-box");
 
-        // 5. Playlist View with a fluid HBox design layout
-        listView = new ListView<>(playlist);
-        listView.setCellFactory(param -> new ListCell<>() {
-            private final HBox cellLayout = new HBox();
-            private final Label nameLabel = new Label();
-            private final Label timeLabel = new Label();
+        HBox sectionHeaderRow = new HBox(playlistHeading, volumeBox);
+        sectionHeaderRow.setAlignment(Pos.BOTTOM_LEFT);
 
-            {
-                // Push name and duration layout edges dynamically to opposite corners
-                HBox.setHgrow(nameLabel, Priority.ALWAYS);
-                nameLabel.setMaxWidth(Double.MAX_VALUE);
-                
-                // Style configurations
-                timeLabel.setStyle("-fx-text-fill: #888888; -fx-font-family: 'Courier New';");
-                cellLayout.getChildren().addAll(nameLabel, timeLabel);
-            }
-
-            @Override
-            protected void updateItem(Track track, boolean empty) {
-                super.updateItem(track, empty);
-                if (empty || track == null) {
-                    setGraphic(null);
-                } else {
-                    nameLabel.setText(track.getDisplayName());
-                    timeLabel.setText("[" + track.getDurationStr() + "]");
-                    setGraphic(cellLayout);
-                }
-            }
-        });
-
-        listView.getSelectionModel().select(currentTrackIndex);
-        listView.setOnMouseClicked(e -> {
-            int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-            if (selectedIndex >= 0) {
-                playTrack(selectedIndex);
-            }
-        });
-
+        // File/Folder Tools inputs
         TextField musicPathField = new TextField();
-        musicPathField.setPromptText("Type a music folder path");
-        musicPathField.setPrefWidth(500);
+        musicPathField.setPromptText("Type or browse a music folder path...");
+        HBox.setHgrow(musicPathField, Priority.ALWAYS);
 
-        Button browseButton = new Button("Browse...");
+        Button browseButton = new Button("Browse Folder");
         browseButton.setOnAction(e -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose Music Folder");
@@ -171,32 +155,93 @@ public class MediaLibrary extends Application {
             }
         });
 
-        Button loadButton = new Button("Load");
-        loadButton.setOnAction(e -> loadMusicFolder(new File(musicPathField.getText().trim())));
-        musicPathField.setOnAction(e -> loadMusicFolder(new File(musicPathField.getText().trim())));
+        HBox fileToolsRow = new HBox(10, musicPathField, browseButton);
+        Label helpText = new Label("Select a directory from your device to load your tracks privately.");
+        helpText.getStyleClass().add("help-text");
 
-        // 6. Layout Alignment
-        mediaView = new MediaView();
-        HBox controlsLayout = new HBox(15);
-        controlsLayout.setAlignment(Pos.CENTER);
-        controlsLayout.getChildren().addAll(playButton, nextButton, shuffleButton, progressSlider, volumeLabel, volumeSlider);
+        // Web Translated Playlist Cell Architecture
+        listView = new ListView<>(playlist);
+        VBox.setVgrow(listView, Priority.ALWAYS);
+        listView.setCellFactory(param -> new ListCell<>() {
+            private final HBox cellLayout = new HBox();
+            private final Label nameLabel = new Label();
+            private final Label timeLabel = new Label();
+            
+            {
+                HBox.setHgrow(nameLabel, Priority.ALWAYS);
+                nameLabel.setMaxWidth(Double.MAX_VALUE);
+                
+                nameLabel.getStyleClass().add("track-title-label");
+                timeLabel.getStyleClass().add("track-duration-label");
+                
+                cellLayout.getStyleClass().add("cell-layout");
+                cellLayout.getChildren().addAll(nameLabel, timeLabel);
+            }
+            
+            @Override
+            protected void updateItem(Track track, boolean empty) {
+                super.updateItem(track, empty);
+                if (empty || track == null) {
+                    setGraphic(null);
+                } else {
+                    nameLabel.setText(track.getDisplayName());
+                    timeLabel.setText(track.getDurationStr());
+                    setGraphic(cellLayout);
+                }
+            }
+        });
 
-        HBox musicPathLayout = new HBox(10, musicPathField, browseButton, loadButton);
-        musicPathLayout.setAlignment(Pos.CENTER);
+        listView.setOnMouseClicked(e -> {
+            int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                playTrack(selectedIndex);
+            }
+        });
 
-        VBox mainLayout = new VBox(25);
-        mainLayout.setAlignment(Pos.CENTER);
-        mainLayout.setPadding(new Insets(30));
-        mainLayout.setStyle("-fx-background-color: #f5f5f5;");
-        mainLayout.getChildren().addAll(trackLabel, mediaView, controlsLayout, musicPathLayout, listView);
+        VBox libraryPanelCard = new VBox(20, sectionHeaderRow, fileToolsRow, helpText, listView);
+        libraryPanelCard.getStyleClass().add("library-panel");
 
-        Scene scene = new Scene(mainLayout, 850, 450); 
-        primaryStage.setTitle("Java Media Player");
+        // Assemble Main Web-Shell Shell Structure Layout
+        mediaView = new MediaView(); 
+
+        // Ensure it is added into your main root layout stack right here
+        VBox rootShell = new VBox(25, headerContainer, mediaView, playerPanelCard, libraryPanelCard);
+        rootShell.getStyleClass().add("player-shell");
+
+        // Seamless Dark Mode Selector Mechanism
+        darkModeBtn.setOnAction(e -> {
+            ObservableList<String> styleClasses = rootShell.getStyleClass();
+            if (styleClasses.contains("dark-mode")) {
+                styleClasses.remove("dark-mode");
+                darkModeBtn.setText("Dark Mode");
+            } else {
+                styleClasses.add("dark-mode");
+                darkModeBtn.setText("Light Mode");
+            }
+        });
+
+        // Initialize Scene and attach CSS properties engine files
+        Scene scene = new Scene(rootShell, 900, 750);
+        java.net.URL cssUrl = MediaLibrary.class.getClassLoader().getResource("desktop.css");
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+
+
+        primaryStage.setTitle("Personal Music Player");
         primaryStage.setScene(scene);
-        primaryStage.show();
+        
+        // Safe container block prevents resource path variations from crashing the boot layer
+        try {
+            java.io.InputStream iconStream = MediaLibrary.class.getClassLoader().getResourceAsStream("myIcon.ico");
+            if (iconStream != null) {
+                primaryStage.getIcons().add(new javafx.scene.image.Image(iconStream));
+            }
+        } catch (Exception e) {
+            System.err.println("Taskbar icon resource could not be loaded safely.");
+        }
 
-        // Trigger asynchronous background header scan for list info
-        loadAllTrackDurationsInBackground();
+        primaryStage.show();
 
         if (!playlist.isEmpty()) {
             playTrack(currentTrackIndex);
@@ -251,7 +296,6 @@ public class MediaLibrary extends Application {
         listView.getSelectionModel().select(currentTrackIndex);
         
         // Scan new folder items asynchronously
-
         loadAllTrackDurationsInBackground();
         playTrack(currentTrackIndex);
     }
@@ -263,12 +307,14 @@ public class MediaLibrary extends Application {
         Track track = playlist.get(trackIndex);
         String mediaUrl = getFullMediaUrl(track.getSource());
 
-        if (mediaPlayer != null) {
+         if (mediaPlayer != null) {
             mediaPlayer.dispose();
         }
 
+        // 1. Create the new track player session instance
         mediaPlayer = new MediaPlayer(new Media(mediaUrl));
-        mediaView = mediaView == null ? new MediaView(mediaPlayer) : mediaView;
+
+        // 2. Safely apply the fresh player directly into your existing layout view container
         mediaView.setMediaPlayer(mediaPlayer);
 
         trackLabel.setText("Now Playing: " + track.getDisplayName());
@@ -289,7 +335,7 @@ public class MediaLibrary extends Application {
         mediaPlayer.setOnEndOfMedia(() -> playTrack(nextTrackIndex()));
         mediaPlayer.play();
         playButton.setText("Pause");
-        }
+    }
 
     private int nextTrackIndex() {
         if (shuffleMode && playlist.size() > 1) {
@@ -301,4 +347,8 @@ public class MediaLibrary extends Application {
         }
         return (currentTrackIndex + 1) % playlist.size();
     }
-    public static void main(String[] args) {launch(args);}}
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}

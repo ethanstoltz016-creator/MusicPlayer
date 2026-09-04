@@ -1,6 +1,6 @@
 public class MainLauncher {
     public static void main(String[] args) {
-        // Replace 'MediaLibrary' with the actual name of your main JavaFX class
-        MediaLibrary.main(args); 
+        // Explicitly routes execution from the dummy file to the JavaFX setup wrapper
+        javafx.application.Application.launch(MediaLibrary.class, args);
     }
 }

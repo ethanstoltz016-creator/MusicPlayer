@@ -7,16 +7,23 @@
   <groupId>com.musicplayer</groupId>
   <artifactId>musicplayer</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>musicplayer Maven Webapp</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <description>Personal Desktop Music Player Application</description>
+  <inceptionYear>2026</inceptionYear>
+  <url>http://example.com</url>
+
+  <organization>
+    <name>Personal Music Library</name>
+    <url>http://example.com</url>
+  </organization>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>25</maven.compiler.source>
-    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>26</maven.compiler.source>
+    <maven.compiler.target>26</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -47,62 +54,60 @@
 
    <build>
     <finalName>musicplayer</finalName>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.5</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>3.4.0</version>
-          <configuration>
-            <failOnMissingWebXml>false</failOnMissingWebXml>
-            <webResources>
-              <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                  <include>audio/**</include>
-                </includes>
-              </resource>
-            </webResources>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
-    <!-- THIS ACTIVE SECTION ENABLES THE PLUGIN FOR EXECUTION -->
     <plugins>
+      <!-- JavaFX Maven Plugin -->
+      <plugin>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-maven-plugin</artifactId>
+          <version>0.0.8</version>
+          <configuration>
+              <mainClass>MediaLibrary</mainClass>
+          </configuration>
+      </plugin>
+      <!-- Assembly plugin compiles a complete fat JAR with preserved platform settings -->
         <plugin>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-maven-plugin</artifactId>
-            <version>0.0.8</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
             <configuration>
-                <mainClass>MediaLibrary</mainClass>
+                <archive>
+                    <manifest>
+                        <mainClass>MainLauncher</mainClass>
+                    </manifest>
+                </archive>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+                <appendAssemblyId>false</appendAssemblyId>
             </configuration>
+            <executions>
+                <execution>
+                    <id>make-assembly</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <!-- Copies native runtime libraries into the output directory for execution isolation -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.6.0</version>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
         </plugin>
     </plugins>
   </build>
-
 </project>
