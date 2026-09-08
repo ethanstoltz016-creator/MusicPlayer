@@ -13,11 +13,11 @@ const volume = document.querySelector('#volume');
 //   '12_The_Catalyst_SpotiDost.mp3'
 // ];
 
-let tracks = bundledTracks.map((fileName) => ({
-  name: displayName(fileName),
-  source: `audio/${encodeURIComponent(fileName)}`,
-  durationStr: '--:--' // Initial placeholder before background metadata loader completes
-}));
+// let tracks = bundledTracks.map((fileName) => ({
+//   name: displayName(fileName),
+//   source: `audio/${encodeURIComponent(fileName)}`,
+//   durationStr: '--:--' // Initial placeholder before background metadata loader completes
+// }));
 let currentIndex = 0;
 let shuffle = false;
 
