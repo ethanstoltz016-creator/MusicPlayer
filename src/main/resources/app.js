@@ -104,26 +104,84 @@ function nextIndex() {
   return index;
 }
 
+// function loadFiles(fileList) {
+//   const files = [...fileList].filter((file) => file.type.startsWith('audio/') || /\.mp3$/i.test(file.name));
+//   if (!files.length) return;
+  
+//   tracks.forEach((track) => {
+//     if (track.local) URL.revokeObjectURL(track.source);
+//   });
+  
+//   tracks = files.sort((first, second) => first.name.localeCompare(second.name)).map((file) => ({
+//     name: file.name.replace(/\.[^/.]+$/, '').replaceAll('_', ' '),
+//     source: URL.createObjectURL(file),
+//     local: true,
+//     durationStr: '--:--'
+//   }));
+  
+//   currentIndex = 0;
+//   renderPlaylist();
+//   loadAllTrackDurations(); // Pull durations immediately for new folders/files loaded
+//   playTrack(0);
+// }
+
 function loadFiles(fileList) {
-  const files = [...fileList].filter((file) => file.type.startsWith('audio/') || /\.mp3$/i.test(file.name));
-  if (!files.length) return;
-  
-  tracks.forEach((track) => {
-    if (track.local) URL.revokeObjectURL(track.source);
+  const files = Array.from(fileList).filter(file =>
+    file.type.startsWith('audio/') ||
+    /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(file.name)
+  );
+
+  console.log('Files received:', files);
+  console.log('Number of files:', files.length);
+
+  if (files.length === 0) {
+    console.log('No audio files found.');
+    return;
+  }
+
+  // Revoke old local object URLs
+  tracks.forEach(track => {
+    if (track.local && track.source) {
+      URL.revokeObjectURL(track.source);
+    }
   });
-  
-  tracks = files.sort((first, second) => first.name.localeCompare(second.name)).map((file) => ({
-    name: file.name.replace(/\.[^/.]+$/, '').replaceAll('_', ' '),
-    source: URL.createObjectURL(file),
-    local: true,
-    durationStr: '--:--'
-  }));
-  
+
+  // Create tracks from selected files
+  tracks = files
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(file => ({
+      name: file.name
+        .replace(/\.[^/.]+$/, '')
+        .replaceAll('_', ' '),
+      source: URL.createObjectURL(file),
+      local: true,
+      durationStr: '--:--'
+    }));
+
+  console.log('Tracks created:', tracks);
+
   currentIndex = 0;
+
   renderPlaylist();
-  loadAllTrackDurations(); // Pull durations immediately for new folders/files loaded
-  playTrack(0);
+  loadAllTrackDurations();
+
+  // Don't automatically play here.
+  // Chrome may block autoplay.
+  if (tracks.length > 0) {
+    playTrack(0);
+  }
 }
+
+document.querySelector('#folderInput').addEventListener('change', event => {
+  console.log('Folder selected:', event.target.files);
+  loadFiles(event.target.files);
+});
+
+document.querySelector('#fileInput').addEventListener('change', event => {
+  console.log('Files selected:', event.target.files);
+  loadFiles(event.target.files);
+});
+
 
 document.querySelector('#previousButton').addEventListener('click', () => playTrack(currentIndex - 1));
 document.querySelector('#nextButton').addEventListener('click', () => playTrack(nextIndex()));
