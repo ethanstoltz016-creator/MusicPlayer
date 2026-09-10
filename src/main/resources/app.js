@@ -18,6 +18,7 @@ const volume = document.querySelector('#volume');
 //   source: `audio/${encodeURIComponent(fileName)}`,
 //   durationStr: '--:--' // Initial placeholder before background metadata loader completes
 // }));
+let tracks = [];
 let currentIndex = 0;
 let shuffle = false;
 
@@ -96,6 +97,7 @@ function playTrack(index) {
 }
 
 function nextIndex() {
+  if (!tracks.length) return 0;
   if (!shuffle || tracks.length < 2) return (currentIndex + 1) % tracks.length;
   let index = currentIndex;
   while (index === currentIndex) {
@@ -183,9 +185,16 @@ document.querySelector('#fileInput').addEventListener('change', event => {
 });
 
 
-document.querySelector('#previousButton').addEventListener('click', () => playTrack(currentIndex - 1));
-document.querySelector('#nextButton').addEventListener('click', () => playTrack(nextIndex()));
+document.querySelector('#previousButton').addEventListener('click', () => {
+  if (!tracks.length) return;
+  playTrack(currentIndex - 1);
+});
+document.querySelector('#nextButton').addEventListener('click', () => {
+  if (!tracks.length) return;
+  playTrack(nextIndex());
+});
 playButton.addEventListener('click', () => {
+  if (!tracks.length) return;
   if (audio.paused) {
     audio.play();
   } else {
@@ -200,13 +209,17 @@ shuffleButton.addEventListener('click', () => {
 volume.addEventListener('input', () => {
   audio.volume = volume.value;
 });
-audio.addEventListener('ended', () => playTrack(nextIndex()));
+audio.addEventListener('ended', () => {
+  if (tracks.length) {
+    playTrack(nextIndex());
+  }
+});
 audio.addEventListener('play', () => { playButton.textContent = 'Pause'; });
 audio.addEventListener('pause', () => { playButton.textContent = 'Play'; });
-document.querySelector('#folderInput').addEventListener('change', (event) => loadFiles(event.target.files));
-document.querySelector('#fileInput').addEventListener('change', (event) => loadFiles(event.target.files));
 
 audio.volume = volume.value;
 renderPlaylist();
-loadAllTrackDurations(); // Run initial duration loader on server tracks
-playTrack(0);
+if (tracks.length) {
+  loadAllTrackDurations();
+  playTrack(0);
+}
