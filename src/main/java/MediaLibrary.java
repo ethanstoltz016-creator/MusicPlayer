@@ -1,9 +1,12 @@
 import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -20,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -29,6 +33,7 @@ public class MediaLibrary extends Application {
     public static class Track {
         private final String source;
         private final String displayName;
+        private String album = "Unknown Album";
         private String durationStr = "Loading...";
 
         public Track(String source) {
@@ -39,6 +44,8 @@ public class MediaLibrary extends Application {
 
         public String getSource() { return source; }
         public String getDisplayName() { return displayName; }
+        public String getAlbum() { return album; }
+        public void setAlbum(String album) { this.album = album == null || album.isBlank() ? "Unknown Album" : album; }
         public String getDurationStr() { return durationStr; }
         public void setDurationStr(String durationStr) { this.durationStr = durationStr; }
     }
@@ -52,6 +59,8 @@ public class MediaLibrary extends Application {
     private Label trackLabel;
     private Button playButton;
     private Slider progressSlider;
+    private Label currentTimeLabel;
+    private Label totalTimeLabel;
     private ListView<Track> listView;
 
     @Override
@@ -78,6 +87,10 @@ public class MediaLibrary extends Application {
 
         // --- 2. Player Controls Panel (<section class="player-panel">) ---
         progressSlider = new Slider();
+        currentTimeLabel = new Label("00:00");
+        totalTimeLabel = new Label("00:00");
+        currentTimeLabel.getStyleClass().add("time-label");
+        totalTimeLabel.getStyleClass().add("time-label");
         HBox.setHgrow(progressSlider, Priority.ALWAYS);
         progressSlider.setOnMouseReleased(e -> {
             if (mediaPlayer != null) {
@@ -108,7 +121,13 @@ public class MediaLibrary extends Application {
             shuffleButton.setText("Shuffle: " + (shuffleMode ? "On" : "Off"));
         });
 
-        HBox controlsLayout = new HBox(12, playButton, nextButton, shuffleButton, progressSlider);
+        Label timeSeparator = new Label("/");
+        timeSeparator.getStyleClass().add("time-separator");
+
+        HBox currentTimeBox = new HBox(0, currentTimeLabel, timeSeparator, totalTimeLabel);
+        currentTimeBox.setAlignment(Pos.CENTER_LEFT);
+
+        HBox controlsLayout = new HBox(4, playButton, nextButton, shuffleButton, progressSlider, currentTimeBox);
         controlsLayout.setAlignment(Pos.CENTER_LEFT);
 
         VBox playerPanelCard = new VBox(controlsLayout);
@@ -163,19 +182,23 @@ public class MediaLibrary extends Application {
         listView = new ListView<>(playlist);
         VBox.setVgrow(listView, Priority.ALWAYS);
         listView.setCellFactory(param -> new ListCell<>() {
-            private final HBox cellLayout = new HBox();
+            private final HBox cellLayout = new HBox(14);
             private final Label nameLabel = new Label();
+            private final Label albumLabel = new Label();
             private final Label timeLabel = new Label();
             
             {
                 HBox.setHgrow(nameLabel, Priority.ALWAYS);
+                HBox.setHgrow(albumLabel, Priority.ALWAYS);
                 nameLabel.setMaxWidth(Double.MAX_VALUE);
+                albumLabel.setMaxWidth(Double.MAX_VALUE);
                 
                 nameLabel.getStyleClass().add("track-title-label");
+                albumLabel.getStyleClass().add("track-album-label");
                 timeLabel.getStyleClass().add("track-duration-label");
                 
                 cellLayout.getStyleClass().add("cell-layout");
-                cellLayout.getChildren().addAll(nameLabel, timeLabel);
+                cellLayout.getChildren().addAll(nameLabel, albumLabel, timeLabel);
             }
             
             @Override
@@ -185,6 +208,7 @@ public class MediaLibrary extends Application {
                     setGraphic(null);
                 } else {
                     nameLabel.setText(track.getDisplayName());
+                    albumLabel.setText(track.getAlbum());
                     timeLabel.setText(track.getDurationStr());
                     setGraphic(cellLayout);
                 }
@@ -228,6 +252,8 @@ public class MediaLibrary extends Application {
         }
 
 
+        bindTimestampFontToWindow(scene);
+
         primaryStage.setTitle("Personal Music Player");
         primaryStage.setScene(scene);
         
@@ -248,6 +274,37 @@ public class MediaLibrary extends Application {
         }
     }
 
+    private void bindTimestampFontToWindow(Scene scene) {
+        if (scene == null) return;
+
+        currentTimeLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {
+            double width = scene.getWidth();
+            double size = Math.max(9.0, Math.min(12.0, 9.0 + ((width - 700.0) / 220.0)));
+            return Font.font("monospace", size);
+        }, scene.widthProperty()));
+
+        totalTimeLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {
+            double width = scene.getWidth();
+            double size = Math.max(9.0, Math.min(12.0, 9.0 + ((width - 700.0) / 220.0)));
+            return Font.font("monospace", size);
+        }, scene.widthProperty()));
+
+        Label timeSeparator = new Label("/");
+        timeSeparator.getStyleClass().add("time-separator");
+        timeSeparator.fontProperty().bind(Bindings.createObjectBinding(() -> {
+            double width = scene.getWidth();
+            double size = Math.max(9.0, Math.min(12.0, 9.0 + ((width - 700.0) / 220.0)));
+            return Font.font("monospace", size);
+        }, scene.widthProperty()));
+    }
+
+    private String formatTime(double totalSeconds) {
+        long totalSecondsLong = Math.max(0, Math.round(totalSeconds));
+        long minutes = totalSecondsLong / 60;
+        long seconds = totalSecondsLong % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
     private void loadAllTrackDurationsInBackground() {
         for (Track track : playlist) {
             String url = getFullMediaUrl(track.getSource());
@@ -260,16 +317,44 @@ public class MediaLibrary extends Application {
                     int minutes = (int) totalSeconds / 60;
                     int seconds = (int) totalSeconds % 60;
                     
-                    // Safely modify data array on UI thread loop
                     Platform.runLater(() -> {
                         track.setDurationStr(String.format("%02d:%02d", minutes, seconds));
-                        listView.refresh(); // Tells list view to cleanly rebuild layout strings
+                        listView.refresh();
                     });
+                    tempPlayer.dispose();
+                });
+
+                tempPlayer.setOnError(() -> {
+                    Platform.runLater(() -> track.setDurationStr("--:--"));
                     tempPlayer.dispose();
                 });
             } catch (Exception ignored) {
                 track.setDurationStr("--:--");
             }
+        }
+    }
+
+    private void loadTrackAlbumMetadata(Track track) {
+        try {
+            Media rawMedia = new Media(getFullMediaUrl(track.getSource()));
+            MediaPlayer tempPlayer = new MediaPlayer(rawMedia);
+
+            tempPlayer.setOnReady(() -> {
+                Object albumValue = rawMedia.getMetadata() != null ? rawMedia.getMetadata().get("album") : null;
+                String album = albumValue == null ? "Unknown Album" : String.valueOf(albumValue).trim();
+
+                Platform.runLater(() -> {
+                    track.setAlbum(album);
+                    if (listView != null) {
+                        listView.refresh();
+                    }
+                });
+                tempPlayer.dispose();
+            });
+
+            tempPlayer.setOnError(() -> tempPlayer.dispose());
+        } catch (Exception ignored) {
+            track.setAlbum("Unknown Album");
         }
     }
 
@@ -285,17 +370,33 @@ public class MediaLibrary extends Application {
         File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".mp3"));
         if (files == null || files.length == 0) return;
 
-        Arrays.sort(files, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+        Arrays.sort(files, (a, b) -> {
+            String aName = a.getName();
+            String bName = b.getName();
+            Matcher aMatcher = Pattern.compile("^(\\d+)").matcher(aName);
+            Matcher bMatcher = Pattern.compile("^(\\d+)").matcher(bName);
+
+            if (aMatcher.find() && bMatcher.find()) {
+                int aNum = Integer.parseInt(aMatcher.group(1));
+                int bNum = Integer.parseInt(bMatcher.group(1));
+                if (aNum != bNum) {
+                    return Integer.compare(aNum, bNum);
+                }
+            }
+
+            return aName.compareToIgnoreCase(bName);
+        });
         
         playlist.clear();
         for (File file : files) {
-            playlist.add(new Track(file.toURI().toString()));
+            Track track = new Track(file.toURI().toString());
+            loadTrackAlbumMetadata(track);
+            playlist.add(track);
         }
         
         currentTrackIndex = 0;
         listView.getSelectionModel().select(currentTrackIndex);
         
-        // Scan new folder items asynchronously
         loadAllTrackDurationsInBackground();
         playTrack(currentTrackIndex);
     }
@@ -318,6 +419,8 @@ public class MediaLibrary extends Application {
         mediaView.setMediaPlayer(mediaPlayer);
 
         trackLabel.setText("Now Playing: " + track.getDisplayName());
+        currentTimeLabel.setText("00:00");
+        totalTimeLabel.setText("00:00");
         
         if (listView != null) {
             listView.getSelectionModel().select(trackIndex);
@@ -329,6 +432,10 @@ public class MediaLibrary extends Application {
             double total = mediaPlayer.getTotalDuration().toMillis();
             if (total > 0 && !progressSlider.isValueChanging()) {
                 progressSlider.setValue((newValue.toMillis() / total) * 100);
+            }
+            currentTimeLabel.setText(formatTime(newValue.toMillis() / 1000.0));
+            if (total > 0) {
+                totalTimeLabel.setText(formatTime(total / 1000.0));
             }
         });
 

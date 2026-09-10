@@ -13,7 +13,7 @@
     }
     </script>
   <!-- <link rel="stylesheet" href="src\main\resources\styles.css"> -->
-  <link rel="stylesheet" href="resources\styles.css">
+  <link rel="stylesheet" href="src\main\resources\styles.css">
 </head>
 <body>
   <main class="player-shell">
@@ -59,7 +59,7 @@
       <!-- Updated playlist container to handle title and duration child nodes -->
       <ol id="playlist" class="playlist" aria-label="Playlist">
         <!-- 
-          Your app.js script will dynamically inject items matching this structure:
+          app.js script will dynamically inject items matching this structure:
           <li class="playlist-item">
             <span class="track-title">Song Title Name</span>
             <span class="track-duration">03:45</span>
@@ -69,6 +69,6 @@
       <p id="emptyMessage" class="empty-message" hidden>No songs loaded yet.</p>
     </section>
   </main>
-  <script src="resources/app.js"></script>
+  <script src="src/main/resources/app.js"></script>
 </body>
 </html>

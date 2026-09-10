@@ -26,6 +26,93 @@ function displayName(fileName) {
   return fileName.replace(/_SpotiDost\.mp3$/i, '').replaceAll('_', ' ');
 }
 
+function decodeId3Text(payload, encoding) {
+  if (!payload || payload.length === 0) return '';
+
+  if (encoding === 1 || encoding === 2) {
+    let text = '';
+    const bytes = payload.slice(1);
+    for (let i = 0; i + 1 < bytes.length; i += 2) {
+      const code = bytes[i] | (bytes[i + 1] << 8);
+      if (code === 0) break;
+      text += String.fromCharCode(code);
+    }
+    return text;
+  }
+
+  if (encoding === 3) {
+    return new TextDecoder('utf-8').decode(payload.slice(1));
+  }
+
+  return new TextDecoder('latin1').decode(payload.slice(1));
+}
+
+function readId3Album(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const bytes = new Uint8Array(reader.result);
+        if (bytes.length < 10 || bytes[0] !== 0x49 || bytes[1] !== 0x44 || bytes[2] !== 0x33) {
+          resolve('Unknown Album');
+          return;
+        }
+
+        let offset = 10;
+        while (offset + 10 <= bytes.length) {
+          const frameIdBytes = bytes.slice(offset, offset + 4);
+          const frameId = Array.from(frameIdBytes).map(byte => String.fromCharCode(byte)).join('');
+
+          if (!frameId || frameId === '\0\0\0\0') break;
+
+          const frameSize = (
+            (bytes[offset + 4] << 24) |
+            (bytes[offset + 5] << 16) |
+            (bytes[offset + 6] << 8) |
+            bytes[offset + 7]
+          );
+
+          if (frameSize <= 0) break;
+
+          if (frameId === 'TALB') {
+            const frameData = bytes.slice(offset + 10, offset + 10 + frameSize);
+            const encoding = frameData[0] ?? 0;
+            const album = decodeId3Text(frameData, encoding);
+            resolve(album || 'Unknown Album');
+            return;
+          }
+
+          offset += 10 + frameSize;
+        }
+
+        resolve('Unknown Album');
+      } catch (error) {
+        resolve('Unknown Album');
+      }
+    };
+
+    reader.onerror = () => resolve('Unknown Album');
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function resolveFileAlbum(file) {
+  const album = await readId3Album(file);
+  return album || 'Unknown Album';
+}
+
+function getTrackSortKey(fileName) {
+  const match = fileName.match(/^(\d+)/);
+  const numericPrefix = match ? Number.parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
+  const baseName = fileName.replace(/\.[^/.]+$/, '');
+
+  return {
+    numericPrefix,
+    name: baseName
+  };
+}
+
 // Helper utility to convert floating seconds into clean MM:SS format strings
 function formatDuration(timeInSeconds) {
   if (isNaN(timeInSeconds) || !isFinite(timeInSeconds)) return '--:--';
@@ -70,16 +157,19 @@ function renderPlaylist() {
     button.ariaLabel = `Play ${track.name}`;
     button.addEventListener('click', () => playTrack(index));
 
-    // Dynamic split content layouts
     const titleSpan = document.createElement('span');
     titleSpan.className = 'track-title';
     titleSpan.textContent = track.name;
+
+    const albumSpan = document.createElement('span');
+    albumSpan.className = 'track-album';
+    albumSpan.textContent = track.album || 'Unknown Album';
 
     const durationSpan = document.createElement('span');
     durationSpan.className = 'track-duration';
     durationSpan.textContent = track.durationStr || '--:--';
 
-    button.append(titleSpan, durationSpan);
+    button.append(titleSpan, albumSpan, durationSpan);
     item.append(button);
     playlistElement.append(item);
   });
@@ -127,7 +217,7 @@ function nextIndex() {
 //   playTrack(0);
 // }
 
-function loadFiles(fileList) {
+async function loadFiles(fileList) {
   const files = Array.from(fileList).filter(file =>
     file.type.startsWith('audio/') ||
     /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(file.name)
@@ -148,17 +238,33 @@ function loadFiles(fileList) {
     }
   });
 
-  // Create tracks from selected files
-  tracks = files
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(file => ({
-      name: file.name
-        .replace(/\.[^/.]+$/, '')
-        .replaceAll('_', ' '),
-      source: URL.createObjectURL(file),
-      local: true,
-      durationStr: '--:--'
-    }));
+  const filesWithMetadata = await Promise.all(
+    [...files]
+      .sort((a, b) => {
+        const aKey = getTrackSortKey(a.name);
+        const bKey = getTrackSortKey(b.name);
+
+        if (aKey.numericPrefix !== bKey.numericPrefix) {
+          return aKey.numericPrefix - bKey.numericPrefix;
+        }
+
+        return aKey.name.localeCompare(bKey.name, undefined, { numeric: true, sensitivity: 'base' });
+      })
+      .map(async file => ({
+        file,
+        album: await resolveFileAlbum(file)
+      }))
+  );
+
+  tracks = filesWithMetadata.map(({ file, album }) => ({
+    name: file.name
+      .replace(/\.[^/.]+$/, '')
+      .replaceAll('_', ' '),
+    album,
+    source: URL.createObjectURL(file),
+    local: true,
+    durationStr: '--:--'
+  }));
 
   console.log('Tracks created:', tracks);
 

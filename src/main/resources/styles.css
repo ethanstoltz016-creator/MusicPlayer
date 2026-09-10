@@ -200,9 +200,10 @@ button:hover,
 }
 
 .playlist li button {
-  display: flex;
-  justify-content: space-between; 
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) auto;
   align-items: center;
+  gap: 14px;
   width: 100%;
   background: none;
   border: none;
@@ -226,16 +227,25 @@ button:hover,
   font-weight: bold;
 }
 
-.playlist li button.selected .track-duration {
+.playlist li button.selected .track-duration,
+.playlist li button.selected .track-album {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.track-title {
-  flex-grow: 1;
+.track-title,
+.track-album {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 15px;
+}
+
+.track-title {
+  min-width: 0;
+}
+
+.track-album {
+  color: var(--muted);
+  min-width: 0;
 }
 
 .track-duration {

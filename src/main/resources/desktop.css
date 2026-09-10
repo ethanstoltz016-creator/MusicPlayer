@@ -92,7 +92,7 @@
     -fx-font-family: "Verdana", "sans-serif";
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-padding: 10 16;
+    -fx-padding: 4 10;
     -fx-background-radius: 0;
     -fx-border-radius: 0;
 }
@@ -117,13 +117,18 @@
 /* Playback Progress Slider Controls */
 .slider .track {
     -fx-background-color: -fx-line;
-    -fx-pref-height: 6;
+    -fx-pref-height: 4;
 }
 .slider .thumb {
     -fx-background-color: -fx-accent;
     -fx-background-radius: 10;
-    -fx-pref-width: 14;
-    -fx-pref-height: 14;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+}
+
+.slider {
+    -fx-padding: 0;
+    -fx-background-insets: 0;
 }
 
 /* Custom Playlist Container Elements */
@@ -156,13 +161,21 @@
     -fx-alignment: center-left;
 }
 
-.track-title-label {
-    -fx-text-fill: -fx-ink;
+.track-title-label,
+.track-album-label {
     -fx-font-family: "Georgia", "serif";
     -fx-font-size: 15px;
+    -fx-text-fill: -fx-ink;
 }
 
-.list-cell:filled:selected .track-title-label {
+.track-album-label {
+    -fx-text-fill: -fx-muted;
+    -fx-font-family: "Verdana", "sans-serif";
+    -fx-font-size: 12px;
+}
+
+.list-cell:filled:selected .track-title-label,
+.list-cell:filled:selected .track-album-label {
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
 }
@@ -171,6 +184,21 @@
     -fx-text-fill: -fx-muted;
     -fx-font-family: "monospace";
     -fx-font-size: 14px;
+}
+
+.time-label {
+    -fx-text-fill: -fx-muted;
+    -fx-font-family: "monospace";
+    -fx-font-size: 10px;
+    -fx-padding: 0;
+    -fx-alignment: center-right;
+}
+
+.time-separator {
+    -fx-text-fill: -fx-muted;
+    -fx-font-family: "monospace";
+    -fx-font-size: 10px;
+    -fx-padding: 0 1 0 1;
 }
 
 .list-cell:filled:selected .track-duration-label {
