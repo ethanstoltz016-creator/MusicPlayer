@@ -14,3 +14,4 @@ and:
   --name "MusicPlayer" `
   --icon "src/main/resources/myIcon.ico"'
 ```
+You may need to change the path in the first line of the above command if you have a different version of the Java JDK or it is in a different location.
