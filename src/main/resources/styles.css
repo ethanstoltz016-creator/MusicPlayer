@@ -4,8 +4,12 @@
   --paper: #f4f1e8;
   --panel: #fffdf7;
   --line: #d6d9c9;
-  --accent: #d65a3a;
-  --accent-dark: #9d3829;
+  --accent: #9d3829;
+  --accent-dark: #d65a3a;
+  --accent-winter: #d65a3a;
+  --accent-spring: #d65a3a;
+  --accent-summer: #d65a3a;
+  --accent-fall: #d65a3a;
   --mint: #dce9d5;
 }
 
@@ -22,7 +26,7 @@ body {
 }
 
 /* ==========================================
-   Dark Mode Component System (Eye-Friendly)
+   Dark Mode and Seasonal Themes
    ========================================== */
 body.dark-mode {
   background-image: none;
@@ -36,6 +40,32 @@ body.dark-mode {
   --line: #475569;         /* Muted border outlines */
   --mint: #334155;         /* Deeper shadow accent to replace the mint */
   --accent: #e07a5f;       /* Softened, less harsh orange-red button highlight */
+}
+/* Make eyebrow clear but soft in dark mode */
+body.dark-mode .eyebrow {
+  color: var(--accent-dark);
+}
+
+/* Ensure audio players remain legible on dark panels */
+body.dark-mode audio {
+  filter: invert(0.9) hue-rotate(180deg); 
+  opacity: 0.85;
+}
+
+body.winter-mode .eyebrow {
+  color: var(--accent-winter);
+}
+
+body.spring-mode .eyebrow {
+  color: var(--accent-spring);
+}
+
+body.fall-mode .eyebrow {
+  color: var(--accent-fall);
+}
+
+body.winter-mode .eyebrow {
+  color: var(--accent-winter);
 }
 
 .player-shell { 
@@ -51,14 +81,9 @@ header {
 
 .eyebrow {
   margin: 0 0 10px; 
-  color: var(--accent-dark);
+  color: var(--accent);
   font: 700 12px/1.2 Verdana, sans-serif;
   letter-spacing: 1.5px;
-}
-
-/* Make eyebrow clear but soft in dark mode */
-body.dark-mode .eyebrow {
-  color: var(--accent);
 }
 
 h1 { 
@@ -103,12 +128,6 @@ h2 {
 
 audio { 
   width: 100%; 
-}
-
-/* Ensure audio players remain legible on dark panels */
-body.dark-mode audio {
-  filter: invert(0.9) hue-rotate(180deg); 
-  opacity: 0.85;
 }
 
 .controls { 
