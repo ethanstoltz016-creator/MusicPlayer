@@ -54,7 +54,6 @@ body.dark-mode {
   --accent: var(--accent-dark);       /* Softened, less harsh orange-red button highlight */
 }
 
-/* Make eyebrow clear but soft in dark mode */
 body.dark-mode .eyebrow {
   color: var(--accent-dark);
 }
@@ -66,9 +65,17 @@ body.dark-mode audio {
 }
 /* Seasonal Themes */
 body.winter-mode {
-  --accent: var(--accent-winter);
   background-color: var(--background-color-winter);
   background-image: var(--background-image-winter);
+
+  /* Overriding variables with soft, low-contrast dark tones */
+  --ink: #e2e8f0;          /* Soft off-white text */
+  --muted: #94a3b8;        /* Muted slate text */
+  --paper: #272727;        /* Match the main body color */
+  --panel: #1e1e1e;        /* Darker grey panel background */
+  --line: #475569;         /* Muted border outlines */
+  --mint: #334155;         /* Deeper shadow accent to replace the mint */
+  --accent: var(--accent-winter);
 }
 
 body.winter-mode .eyebrow {
@@ -76,9 +83,18 @@ body.winter-mode .eyebrow {
 }
 
 body.spring-mode {
-  --accent: var(--accent-spring);
+  
   background-color: var(--background-color-spring);
   background-image: var(--background-image-spring);
+
+  /* Overriding variables with soft, low-contrast dark tones */
+  --ink: #e2e8f0;          /* Soft off-white text */
+  --muted: #94a3b8;        /* Muted slate text */
+  --paper: #272727;        /* Match the main body color */
+  --panel: #1e1e1e;        /* Darker grey panel background */
+  --line: #475569;         /* Muted border outlines */
+  --mint: #334155;         /* Deeper shadow accent to replace the mint */
+  --accent: var(--accent-spring);
 }
 
 body.spring-mode .eyebrow {
@@ -86,9 +102,17 @@ body.spring-mode .eyebrow {
 }
 
 body.summer-mode {
-  --accent: var(--accent-summer);
   background-color: var(--background-color-summer);
   background-image: var(--background-image-summer);
+
+  /* Overriding variables with soft, low-contrast dark tones */
+  --ink: #e2e8f0;          /* Soft off-white text */
+  --muted: #94a3b8;        /* Muted slate text */
+  --paper: #272727;        /* Match the main body color */
+  --panel: #1e1e1e;        /* Darker grey panel background */
+  --line: #475569;         /* Muted border outlines */
+  --mint: #334155;         /* Deeper shadow accent to replace the mint */
+  --accent: var(--accent-summer);
 }
 
 body.summer-mode .eyebrow {
@@ -96,9 +120,17 @@ body.summer-mode .eyebrow {
 }
 
 body.fall-mode {
-  --accent: var(--accent-fall);
   background-color: var(--background-color-fall);
   background-image: var(--background-image-fall);
+
+  /* Overriding variables with soft, low-contrast dark tones */
+  --ink: #e2e8f0;          /* Soft off-white text */
+  --muted: #94a3b8;        /* Muted slate text */
+  --paper: #272727;        /* Match the main body color */
+  --panel: #1e1e1e;        /* Darker grey panel background */
+  --line: #475569;         /* Muted border outlines */
+  --mint: #334155;         /* Deeper shadow accent to replace the mint */
+  --accent: var(--accent-fall);
 }
 
 body.fall-mode .eyebrow {
