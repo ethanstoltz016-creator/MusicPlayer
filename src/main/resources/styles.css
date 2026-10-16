@@ -138,6 +138,75 @@ body.fall-mode .eyebrow {
   color: var(--accent-fall);
 }
 
+
+/* ==========================================
+   Dark Seasonal Palettes
+   ========================================== */
+
+/* Dark Winter — icy blue */
+body.dark-mode.winter-mode {
+  --ink: #e0eaf3;
+  --muted: #9aafc2;
+  --paper: #202b36;
+  --panel: #263442;
+  --line: #43576a;
+  --mint: #304657;
+  --accent: #83b8df;
+
+  --background-color: #18232e;
+  --background-image: none;
+}
+
+/* Dark Spring — forest green */
+body.dark-mode.spring-mode {
+  --ink: #e0eee2;
+  --muted: #a0bba5;
+  --paper: #202f25;
+  --panel: #293b2e;
+  --line: #465f4b;
+  --mint: #304b37;
+  --accent: #91c99b;
+
+  --background-color: #19251d;
+  --background-image: none;
+}
+
+/* Dark Summer — warm golden tones */
+body.dark-mode.summer-mode {
+  --ink: #f5e8c9;
+  --muted: #c3ae82;
+  --paper: #342b1c;
+  --panel: #403522;
+  --line: #625237;
+  --mint: #514127;
+  --accent: #e8bd62;
+
+  --background-color: #282116;
+  --background-image: none;
+}
+
+/* Dark Fall — burnt orange and brown */
+body.dark-mode.fall-mode {
+  --ink: #f2e2d9;
+  --muted: #c4a69a;
+  --paper: #332521;
+  --panel: #40302a;
+  --line: #62473c;
+  --mint: #50372d;
+  --accent: #e49a75;
+
+  --background-color: #271c19;
+  --background-image: none;
+}
+
+/* Keep seasonal eyebrow colors consistent */
+body.dark-mode.winter-mode .eyebrow,
+body.dark-mode.spring-mode .eyebrow,
+body.dark-mode.summer-mode .eyebrow,
+body.dark-mode.fall-mode .eyebrow {
+  color: var(--accent);
+}
+
 .player-shell { 
   width: min(920px, calc(100% - 32px));
   margin: 0 auto; 
