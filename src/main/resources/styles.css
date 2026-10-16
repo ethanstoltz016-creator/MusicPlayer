@@ -6,22 +6,22 @@
   --line: #d6d9c9;
   --accent: #9d3829;
   --background-color: var(--paper);
-  --background-image: background-image: radial-gradient(circle at top right, #e4ebd9 0, transparent 36%);--accent: #9d3829;
+  --background-image: radial-gradient(circle at top right, #e4ebd9 0, transparent 36%);
   --accent-dark: #d65a3a;
   --background-color-dark: rgb(39, 39, 39);
-  --background-image-dark: background-image: none;
+  --background-image-dark: none;
   --accent-winter: #d65a3a;
-  --background-color-winter: background-color: var(--paper);
-  --background-image-winter: background-image: none;
+  --background-color-winter: var(--paper);
+  --background-image-winter: none;
   --accent-spring: #d65a3a;
-  --background-color-spring: background-color: var(--paper);
-  --background-image-spring: background-image: none;
+  --background-color-spring: var(--paper);
+  --background-image-spring: none;
   --accent-summer: #d65a3a;
-  --background-color-summer: background-color: var(--paper);
-  --background-image-summer: background-image: none;
+  --background-color-summer: var(--paper);
+  --background-image-summer: none;
   --accent-fall: #d65a3a;
-  --background-color-fall: background-color: var(--paper);
-  --background-image-fall: background-image: none;
+  --background-color-fall: var(--paper);
+  --background-image-fall: none;
   --mint: #dce9d5;
 }
 
@@ -32,7 +32,7 @@ body {
   min-width: 320px;
   color: var(--ink);
   background-color: var(--background-color);
-  background-image: --background-image;
+  background-image: var(--background-image);
   transition: background 0.3s ease, color 0.3s ease; 
   font-family: Georgia, 'Times New Roman', serif;
 }
@@ -42,7 +42,7 @@ body {
    ========================================== */
 body.dark-mode {
   background-image: var(--background-image-dark);
-  background-color: rgb(39, 39, 39);
+  background-color: var(--background-color-dark);
   
   /* Overriding variables with soft, low-contrast dark tones */
   --ink: #e2e8f0;          /* Soft off-white text */
@@ -51,8 +51,9 @@ body.dark-mode {
   --panel: #1e1e1e;        /* Darker grey panel background */
   --line: #475569;         /* Muted border outlines */
   --mint: #334155;         /* Deeper shadow accent to replace the mint */
-  --accent: var(--accent-dark;       /* Softened, less harsh orange-red button highlight */
+  --accent: var(--accent-dark);       /* Softened, less harsh orange-red button highlight */
 }
+
 /* Make eyebrow clear but soft in dark mode */
 body.dark-mode .eyebrow {
   color: var(--accent-dark);
@@ -63,22 +64,48 @@ body.dark-mode audio {
   filter: invert(0.9) hue-rotate(180deg); 
   opacity: 0.85;
 }
+/* Seasonal Themes */
+body.winter-mode {
+  --accent: var(--accent-winter);
+  background-color: var(--background-color-winter);
+  background-image: var(--background-image-winter);
+}
 
 body.winter-mode .eyebrow {
   color: var(--accent-winter);
+}
+
+body.spring-mode {
+  --accent: var(--accent-spring);
+  background-color: var(--background-color-spring);
+  background-image: var(--background-image-spring);
 }
 
 body.spring-mode .eyebrow {
   color: var(--accent-spring);
 }
 
+body.summer-mode {
+  --accent: var(--accent-summer);
+  background-color: var(--background-color-summer);
+  background-image: var(--background-image-summer);
+}
+
+body.summer-mode .eyebrow {
+  color: var(--accent-summer);
+}
+
+body.fall-mode {
+  --accent: var(--accent-fall);
+  background-color: var(--background-color-fall);
+  background-image: var(--background-image-fall);
+}
+
 body.fall-mode .eyebrow {
   color: var(--accent-fall);
 }
 
-body.winter-mode .eyebrow {
-  color: var(--accent-winter);
-}
+
 
 .player-shell { 
   width: min(920px, calc(100% - 32px));
