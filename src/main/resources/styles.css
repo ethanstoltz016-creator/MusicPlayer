@@ -5,7 +5,9 @@
   --panel: #fffdf7;
   --line: #d6d9c9;
   --accent: #9d3829;
+  --background-image: background-image: radial-gradient(circle at top right, #e4ebd9 0, transparent 36%);--accent: #9d3829;
   --accent-dark: #d65a3a;
+  --background-image-dark: background-image: none;
   --accent-winter: #d65a3a;
   --accent-spring: #d65a3a;
   --accent-summer: #d65a3a;
@@ -20,7 +22,7 @@ body {
   min-width: 320px;
   color: var(--ink);
   background-color: var(--paper);
-  background-image: radial-gradient(circle at top right, #e4ebd9 0, transparent 36%);
+  background-image: --background-image;
   transition: background 0.3s ease, color 0.3s ease; 
   font-family: Georgia, 'Times New Roman', serif;
 }
@@ -29,7 +31,7 @@ body {
    Dark Mode and Seasonal Themes
    ========================================== */
 body.dark-mode {
-  background-image: none;
+  background-image: -background-image-dark;
   background-color: rgb(39, 39, 39);
   
   /* Overriding variables with soft, low-contrast dark tones */
