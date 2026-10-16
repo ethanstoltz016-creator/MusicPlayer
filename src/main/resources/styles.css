@@ -5,13 +5,23 @@
   --panel: #fffdf7;
   --line: #d6d9c9;
   --accent: #9d3829;
+  --background-color: var(--paper);
   --background-image: background-image: radial-gradient(circle at top right, #e4ebd9 0, transparent 36%);--accent: #9d3829;
   --accent-dark: #d65a3a;
+  --background-color-dark: rgb(39, 39, 39);
   --background-image-dark: background-image: none;
   --accent-winter: #d65a3a;
+  --background-color-winter: background-color: var(--paper);
+  --background-image-winter: background-image: none;
   --accent-spring: #d65a3a;
+  --background-color-spring: background-color: var(--paper);
+  --background-image-spring: background-image: none;
   --accent-summer: #d65a3a;
+  --background-color-summer: background-color: var(--paper);
+  --background-image-summer: background-image: none;
   --accent-fall: #d65a3a;
+  --background-color-fall: background-color: var(--paper);
+  --background-image-fall: background-image: none;
   --mint: #dce9d5;
 }
 
@@ -21,7 +31,7 @@ body {
   margin: 0;
   min-width: 320px;
   color: var(--ink);
-  background-color: var(--paper);
+  background-color: var(--background-color);
   background-image: --background-image;
   transition: background 0.3s ease, color 0.3s ease; 
   font-family: Georgia, 'Times New Roman', serif;
@@ -31,7 +41,7 @@ body {
    Dark Mode and Seasonal Themes
    ========================================== */
 body.dark-mode {
-  background-image: -background-image-dark;
+  background-image: var(--background-image-dark);
   background-color: rgb(39, 39, 39);
   
   /* Overriding variables with soft, low-contrast dark tones */
@@ -41,7 +51,7 @@ body.dark-mode {
   --panel: #1e1e1e;        /* Darker grey panel background */
   --line: #475569;         /* Muted border outlines */
   --mint: #334155;         /* Deeper shadow accent to replace the mint */
-  --accent: #e07a5f;       /* Softened, less harsh orange-red button highlight */
+  --accent: var(--accent-dark;       /* Softened, less harsh orange-red button highlight */
 }
 /* Make eyebrow clear but soft in dark mode */
 body.dark-mode .eyebrow {
