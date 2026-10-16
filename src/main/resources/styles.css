@@ -64,80 +64,79 @@ body.dark-mode audio {
   opacity: 0.85;
 }
 /* Seasonal Themes */
+
+/* Winter Theme */
 body.winter-mode {
+  --ink: #263746;
+  --muted: #64798a;
+  --paper: #edf3f7;
+  --panel: #f9fcff;
+  --line: #c5d5e0;
+  --mint: #d3e4ef;
+  --accent: var(--accent-winter);
+
   background-color: var(--background-color-winter);
   background-image: var(--background-image-winter);
-
-  /* Overriding variables with soft, low-contrast dark tones */
-  --ink: #e2e8f0;          /* Soft off-white text */
-  --muted: #94a3b8;        /* Muted slate text */
-  --paper: #272727;        /* Match the main body color */
-  --panel: #1e1e1e;        /* Darker grey panel background */
-  --line: #475569;         /* Muted border outlines */
-  --mint: #334155;         /* Deeper shadow accent to replace the mint */
-  --accent: var(--accent-winter);
 }
 
-body.winter-mode .eyebrow {
-  color: var(--accent-winter);
-}
-
+/* Spring Theme */
 body.spring-mode {
-  
+  --ink: #263b2b;
+  --muted: #687c6a;
+  --paper: #f0f5e9;
+  --panel: #fcfff8;
+  --line: #d0dec5;
+  --mint: #dcebd2;
+  --accent: var(--accent-spring);
+
   background-color: var(--background-color-spring);
   background-image: var(--background-image-spring);
+}
 
-  /* Overriding variables with soft, low-contrast dark tones */
-  --ink: #e2e8f0;          /* Soft off-white text */
-  --muted: #94a3b8;        /* Muted slate text */
-  --paper: #272727;        /* Match the main body color */
-  --panel: #1e1e1e;        /* Darker grey panel background */
-  --line: #475569;         /* Muted border outlines */
-  --mint: #334155;         /* Deeper shadow accent to replace the mint */
-  --accent: var(--accent-spring);
+/* Summer Theme */
+body.summer-mode {
+  --ink: #44351f;
+  --muted: #84704e;
+  --paper: #fbf1d9;
+  --panel: #fffaf0;
+  --line: #e6d5ad;
+  --mint: #f1dfb7;
+  --accent: var(--accent-summer);
+
+  background-color: var(--background-color-summer);
+  background-image: var(--background-image-summer);
+}
+
+/* Fall Theme */
+body.fall-mode {
+  --ink: #432b24;
+  --muted: #85675c;
+  --paper: #f3e6d9;
+  --panel: #fff8f1;
+  --line: #dfc8b5;
+  --mint: #e8d0bc;
+  --accent: var(--accent-fall);
+
+  background-color: var(--background-color-fall);
+  background-image: var(--background-image-fall);
+}
+
+/* Seasonal eyebrow colors */
+body.winter-mode .eyebrow {
+  color: var(--accent-winter);
 }
 
 body.spring-mode .eyebrow {
   color: var(--accent-spring);
 }
 
-body.summer-mode {
-  background-color: var(--background-color-summer);
-  background-image: var(--background-image-summer);
-
-  /* Overriding variables with soft, low-contrast dark tones */
-  --ink: #e2e8f0;          /* Soft off-white text */
-  --muted: #94a3b8;        /* Muted slate text */
-  --paper: #272727;        /* Match the main body color */
-  --panel: #1e1e1e;        /* Darker grey panel background */
-  --line: #475569;         /* Muted border outlines */
-  --mint: #334155;         /* Deeper shadow accent to replace the mint */
-  --accent: var(--accent-summer);
-}
-
 body.summer-mode .eyebrow {
   color: var(--accent-summer);
-}
-
-body.fall-mode {
-  background-color: var(--background-color-fall);
-  background-image: var(--background-image-fall);
-
-  /* Overriding variables with soft, low-contrast dark tones */
-  --ink: #e2e8f0;          /* Soft off-white text */
-  --muted: #94a3b8;        /* Muted slate text */
-  --paper: #272727;        /* Match the main body color */
-  --panel: #1e1e1e;        /* Darker grey panel background */
-  --line: #475569;         /* Muted border outlines */
-  --mint: #334155;         /* Deeper shadow accent to replace the mint */
-  --accent: var(--accent-fall);
 }
 
 body.fall-mode .eyebrow {
   color: var(--accent-fall);
 }
-
-
 
 .player-shell { 
   width: min(920px, calc(100% - 32px));
